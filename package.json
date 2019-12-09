@@ -1,0 +1,19 @@
+{
+  "name": "icon-cli",
+  "version": "0.0.1",
+  "description": "iconfont 下载工具",
+  "main": "index.js",
+  "bin": {
+    "icon-cli": "bin/index"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "无始大帝",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-styles": "^4.2.0",
+    "commander": "^4.0.1",
+    "ora": "^4.0.3"
+  }
+}
