@@ -11,8 +11,14 @@
 ## TODO
 
 + [x] 资源下载功能
-+ [x] 设置下载路径
++ [x] 设置文件存储路径
 + [] 支持配置功能，执行下载命令
 + [] 单测
 + [] 打包、发布
 + [] 文档
+
+### node 爬虫相关包
+
++ [superagent](https://www.npmjs.com/package/superagent)
++ [cheerio](https://www.npmjs.com/package/cheerio)
++ [puppeteer](https://www.npmjs.com/package/puppeteer)
