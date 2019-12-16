@@ -2,11 +2,12 @@
 
 const commander = require('commander');
 const ora = require('ora');
-const fs = require('fs');
 const chalk = require('../lib/chalk');
 const download = require('../lib/download');
 const spinner = ora();
 const { checkHttps, to, checkFile, rmFile, mkDir } = require('../utils/tool');
+const reptile = require('../lib/reptile');
+
 commander
   .version(require('../package.json').version, '-v, --version')
   .description(
@@ -62,9 +63,18 @@ commander
     // TODO: 先设计好配置项
     const config = {
       target: './lib/iconfont',
-      url: '',
+      url: 'https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.db775f1f3&manage_type=myprojects&projectId=738291&keyword=',
     }
-    console.log('d 下载操作');
+    reptile(config.url);
+    // https.get(config.url, (res) => {
+    //   res.on('data', (data) => {
+    //     console.log(data);
+    //   });
+    //   res.on('end', () => {
+    //     console.info('https-end')
+    //   })
+    // })
+    console.log('d 下载操作', config);
   })
 
 commander.parse(process.argv);

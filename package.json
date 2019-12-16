@@ -13,7 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "ansi-styles": "^4.2.0",
+    "cheerio": "^1.0.0-rc.3",
     "commander": "^4.0.1",
-    "ora": "^4.0.3"
+    "ora": "^4.0.3",
+    "puppeteer": "^2.0.0",
+    "request": "^2.88.0"
   }
 }
