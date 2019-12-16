@@ -2,10 +2,11 @@
 
 const commander = require('commander');
 const ora = require('ora');
+const fs = require('fs');
 const chalk = require('../lib/chalk');
 const download = require('../lib/download');
 const spinner = ora();
-const { checkHttps } = require('../utils/tool');
+const { checkHttps, to, checkFile, rmFile, mkDir } = require('../utils/tool');
 commander
   .version(require('../package.json').version, '-v, --version')
   .description(
@@ -25,28 +26,26 @@ commander
     }
     const url = checkHttps(source[0]);
     if (httpsVerify(url)) return;
-    spinner.start(chalk.green('下载中... 请稍后'));
-    download(url).then((msg) => {
-      spinner.succeed(chalk.green(msg));
-      spinner.stop();
-    }).catch((msg) => {
-      spinner.fail(chalk.redBright(msg));
-      spinner.stop();
-    })
+    __download(url);
   })
   .command('target')
   .description('icon-cli target 文件目录位置,相对路径 网络资源地址')
-  .action(({}, source) => {
+  .action(async ({}, source) => {
     if (source.length !== 2) {
       spinner.warn(chalk.red('非法入参, 你需要传入两个参数'))
       spinner.stop();
       return;
     }
-    const path = source[0];
+    const path = source[0].replace(/\/{1,}$/ig, '');
     const url = checkHttps(source[1]);
-    console.info(httpsVerify(url));
     if (httpsVerify(url)) return;
-    console.log('target------', source);
+    const [err] = await to(mkDir(path));
+    if (err) {
+      spinner.fail(chalk.red('文件目录创建失败'))
+      spinner.stop();
+      return;
+    }
+    __download(url, path);
   });
 
 commander
@@ -60,7 +59,12 @@ commander
   .command('d')
   .description('icon-cli d 依据下载配置,下载相关字体资源')
   .action(() => {
-    console.log('d 下载操作')
+    // TODO: 先设计好配置项
+    const config = {
+      target: './lib/iconfont',
+      url: '',
+    }
+    console.log('d 下载操作');
   })
 
 commander.parse(process.argv);
@@ -72,4 +76,26 @@ function httpsVerify(url) {
     return true;
   }
   return false;
+}
+
+async function __download(url, path) {
+  const [err] = await to(checkFile('iconfont.js'));
+  if (err) {
+    downloadHandle(url, path);
+    return;
+  }
+  const [, result] = await to(rmFile('iconfont.js'));
+  result && downloadHandle(url, path);
+}
+
+async function downloadHandle(url, path) {
+  spinner.start(chalk.green('下载中... 请稍后'));
+  const [err, successful] = await to(download(url, path));
+  if (err) {
+    spinner.fail(chalk.redBright(`文件保存失败\n${err}`));
+    spinner.stop();
+    return;
+  }
+  spinner.succeed(chalk.green(successful));
+  spinner.stop();
 }
